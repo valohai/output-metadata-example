@@ -14,6 +14,11 @@ def iso_date() -> str:
     return datetime.date.today().isoformat()
 
 
+def new_dataset_version() -> str:
+    """Create a new, unique dataset version name."""
+    return str(int(datetime.datetime.now().timestamp()))
+
+
 def random_filenames(nr_files: int) -> Generator[str, None, None]:
     """Generate random, unique filenames."""
     return (fake.unique.file_name(extension="txt") for _ in range(nr_files))

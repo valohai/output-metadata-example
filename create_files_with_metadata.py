@@ -9,7 +9,13 @@ from typing import Any
 
 import valohai  # type: ignore
 
-from util import iso_date, random_filenames, dummy_metadata, random_paragraphs
+from util import (
+    iso_date,
+    random_filenames,
+    dummy_metadata,
+    random_paragraphs,
+    new_dataset_version,
+)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -53,6 +59,11 @@ metadata_file_path = valohai.outputs().path("outputs.metadata.jsonl")
 # metadata format: {file_path: metadata, ...}
 execution_outputs_metadata: dict[str, dict[str, Any]] = {}
 
+# datasets and version to be created
+dataset_name = "metadata-demo"
+dataset_2_name = "metadata-demo-2"
+dataset_version = new_dataset_version()
+
 # create random files with metadata
 
 nr_of_files = 10
@@ -63,9 +74,16 @@ for filename in random_filenames(nr_of_files):
     with open(output_path.path(filename), "w") as output_file:
         output_file.write(random_paragraphs())
 
-    # create file metadata
+    # create some dummy metadata for the file
     file_path = f"{output_dir}/{filename}"
     file_metadata = dummy_metadata()
+
+    # add the file to the dataset versions
+    file_metadata["valohai.dataset-versions"] = [
+        f"dataset://{dataset_name}/{dataset_version}",
+        f"dataset://{dataset_2_name}/{dataset_version}",
+    ]
+
     execution_outputs_metadata[file_path] = file_metadata
 
 # save metadata to a file
