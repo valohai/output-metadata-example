@@ -1,5 +1,8 @@
-# Valohai utilities for handling output data
+# Valohai utilities for handling output data in the script
 valohai-utils
 
 # Helper for creating dummy data for demo purposes
 faker
+
+# Command-line utility for creating valohai.yaml and running executions
+valohai-cli
