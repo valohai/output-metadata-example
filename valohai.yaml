@@ -1,0 +1,6 @@
+- step:
+    name: create-files
+    image: python:3.13-slim
+    command:
+      - pip install -r requirements.txt
+      - python ./create_files_with_metadata.py {parameters}
