@@ -1,0 +1,5 @@
+# Valohai utilities for handling output data
+valohai-utils
+
+# Helper for creating dummy data for demo purposes
+faker
