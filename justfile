@@ -4,4 +4,4 @@ dev:
 
 # Run an ad-hoc execution
 adhoc:
-    vh execution run --adhoc create-files
+    vh execution run --adhoc --title "dataset with random files" create-files
