@@ -34,3 +34,32 @@ You can run the execution from the command-line (using `valohai-cli`) with:
 ```shell
 vh execution run create-files
 ```
+
+## Creating the Metadata File
+
+Instead of creating a sidecar file for each output,
+you create a single metadata file that lists all the outputs.
+
+The metadata file name must be `outputs.metadata.jsonl`
+and it must be in the execution outputs root directory.
+
+The file format is JSON lines,
+where each line is a JSON object with the following fields:
+
+- `file`: The name (including the path) of the output file
+- `metadata`: The metadata as a JSON object
+
+The value of the `metadata` property is the same JSON object that you would put in a sidecar file.
+It is then applied to the file specified in the `file` property.
+
+For example, if your output file is `output.txt` in a directory called `my_outputs`,
+and you want to set a metadata property `my_property` to the value `my_value`,
+you would create a file called `outputs.metadata.jsonl` with the following content:
+
+```jsonlines
+{"file": "my_outputs/output.txt", "metadata": {"my_property": "my_value"}}
+```
+
+(Note that in the sidecar JSON file,
+you can divide the properties into multiple lines for readability,
+but in the JSON lines file, each list of file properties must be on a single line.)
