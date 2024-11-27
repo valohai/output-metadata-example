@@ -53,8 +53,8 @@ valohai.prepare(
 output_dir = iso_date()
 
 # the metadata file must be saved in the outputs root directory
-# under the name "outputs.metadata.jsonl"
-metadata_file_path = valohai.outputs().path("outputs.metadata.jsonl")
+# under the name "valohai.metadata.jsonl"
+metadata_file_path = valohai.outputs().path("valohai.metadata.jsonl")
 
 # metadata format: {file_path: metadata, ...}
 execution_outputs_metadata: dict[str, dict[str, Any]] = {}
