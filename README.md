@@ -7,29 +7,19 @@ instead of creating an individual sidecar file for each output.
 
 To run this project as-is, you need Python 3.9 or later installed on your system.
 
-### Recommended Tools
-
-The following tools are recommended but not required:
-
-- `uv` for handling virtual environments and dependencies
-- `just` for running the project tasks
-
 ## Setup
 
-To set up the project, first create a virtual environment, and then install the required dependencies with:
-
-```shell
-just dev
-```
-
-You can also use the `requirements.txt` file to install the dependencies manually with `pip` instead.
+To set up the project, first create a virtual environment,
+and then install the required dependencies (from `requirements.txt`).
 
 Next, you need to log on Valohai and associate the project directory with a project.
 (See [Valohai documentation](https://docs.valohai.com/hc/en-us/) → _Command-line Client_ for more information.)
 
 ## Running the Project
 
-You can run the execution from the command-line (using `valohai-cli`) with:
+Run the execution step `create-files` either from the UI or
+from the command-line (using `valohai-cli`).
+No parameters are needed for this step.
 
 ```shell
 vh execution run create-files

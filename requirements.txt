@@ -5,4 +5,5 @@ valohai-utils
 faker
 
 # Command-line utility for creating valohai.yaml and running executions
-valohai-cli
+# Optional: uncomment if you want to use the CLI
+#valohai-cli
