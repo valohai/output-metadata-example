@@ -3,6 +3,10 @@
 This is an example of how to use a single metadata file for all execution outputs
 instead of creating an individual sidecar file for each output.
 
+This has benefits when you have many outputs,
+as parsing a single file is faster than parsing many files,
+and one file also takes up less storage than many very small files.
+
 ## Prerequisites
 
 To run this project as-is, you need Python 3.9 or later installed on your system.
@@ -23,6 +27,12 @@ No parameters are needed for this step.
 
 ```shell
 vh execution run create-files
+```
+
+You can set the number of output files with the `--nr-of-files` parameter:
+
+```shell
+vh execution run create-files --nr-of-files=100
 ```
 
 ## Creating the Metadata File

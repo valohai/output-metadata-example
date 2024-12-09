@@ -42,9 +42,14 @@ def format_metadata_line(file_path: str, file_metadata: dict[str, Any]) -> str:
 
 # define the step for valohai.yaml
 
+default_parameters = {
+    "nr_of_files": 10,
+}
+
 valohai.prepare(
     step="create-files",
-    image="python:3.13-slim",
+    image="ghcr.io/astral-sh/uv:python3.13-bookworm-slim",
+    default_parameters=default_parameters,
 )
 
 # put the created files in a directory named after the current date
@@ -66,8 +71,9 @@ dataset_version = new_dataset_version()
 
 # create random files with metadata
 
-nr_of_files = 10
+nr_of_files = valohai.parameters("nr_of_files").value
 output_path = valohai.outputs(output_dir)
+
 for filename in random_filenames(nr_of_files):
     # create a file with dummy content
     logger.info(f"Creating file: {filename}")

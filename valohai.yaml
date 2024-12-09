@@ -6,3 +6,8 @@
       - source .venv/bin/activate
       - uv pip install -r requirements.txt
       - python ./create_files_with_metadata.py {parameters}
+    parameters:
+      - name: nr_of_files
+        default: 10
+        optional: false
+        type: integer
