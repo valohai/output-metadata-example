@@ -21,7 +21,7 @@ def new_dataset_version() -> str:
 
 def random_filenames(nr_files: int) -> Generator[str, None, None]:
     """Generate random, unique filenames."""
-    return (fake.unique.file_name(extension="txt") for _ in range(nr_files))
+    return (f"{fake.file_name(extension='')}_{index}.txt" for index in range(nr_files))
 
 
 def random_paragraphs() -> str:
