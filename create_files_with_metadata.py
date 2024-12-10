@@ -90,18 +90,6 @@ for filename in random_filenames(nr_of_files):
         f"dataset://{dataset_2_name}/{dataset_version}",
     ]
 
-    execution_outputs_metadata[file_path] = file_metadata
-
-# save metadata to a file
-
-logger.info(f"Saving metadata to: {metadata_file_path}")
-with open(metadata_file_path, "w") as metadata_file:
-    metadata_file.writelines(
-        format_metadata_line(filename, file_metadata)
-        for filename, file_metadata in execution_outputs_metadata.items()
-    )
-
-# output the metadata to the execution log
-
-with open(metadata_file_path) as metadata_file:
-    logger.info("Execution metadata:\n" + metadata_file.read())
+    logger.info("Creating a sidecar file")
+    with open(output_path.path(filename + ".metadata.json"), "w") as sidecar_file:
+        sidecar_file.write(json.dumps(file_metadata))
