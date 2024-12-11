@@ -7,34 +7,6 @@ This has benefits when you have many outputs,
 as parsing a single file is faster than parsing many files,
 and one file also takes up less storage than many very small files.
 
-## Prerequisites
-
-To run this project as-is, you need Python 3.9 or later installed on your system.
-
-## Setup
-
-To set up the project, first create a virtual environment,
-and then install the required dependencies (from `requirements.txt`).
-
-Next, you need to log on Valohai and associate the project directory with a project.
-(See [Valohai documentation](https://docs.valohai.com/hc/en-us/) → _Command-line Client_ for more information.)
-
-## Running the Project
-
-Run the execution step `create-files` either from the UI or
-from the command-line (using `valohai-cli`).
-No parameters are needed for this step.
-
-```shell
-vh execution run create-files
-```
-
-You can set the number of output files with the `--nr-of-files` parameter:
-
-```shell
-vh execution run create-files --nr-of-files=100
-```
-
 ## Creating the Metadata File
 
 Instead of creating a sidecar file for each output,
@@ -63,3 +35,33 @@ you would create a file called `valohai.metadata.jsonl` with the following conte
 (Note that in the sidecar JSON file,
 you can divide the properties into multiple lines for readability,
 but in the JSON lines file, each list of file properties must be on a single line.)
+
+## Local Setup
+
+### Prerequisites
+
+To run this project as-is, you need Python 3.9 or later installed on your system.
+
+### Setup
+
+To set up the project, first create a virtual environment,
+and then install the required dependencies (from `requirements.txt`).
+
+Next, you need to log on Valohai and associate the project directory with a project.
+(See [Valohai documentation](https://docs.valohai.com/hc/en-us/) → _Command-line Client_ for more information.)
+
+### Running the Project
+
+Run the execution step `create-files` either from the UI or
+from the command-line (using `valohai-cli`).
+No parameters are needed for this step.
+
+```shell
+vh execution run create-files
+```
+
+You can set the number of output files with the `--nr-of-files` parameter:
+
+```shell
+vh execution run create-files --nr-of-files=100
+```
