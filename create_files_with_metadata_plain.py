@@ -1,0 +1,110 @@
+"""Execution step that creates random files with metadata.
+
+Metadata is stored in one file per execution.
+
+For simplicity, this example uses valohai_utils for handling the output paths,
+but the metadata file is created manually.
+"""
+
+import json
+import logging
+from typing import Any
+
+import valohai  # type: ignore
+
+from util import (
+    iso_date,
+    random_filenames,
+    dummy_metadata,
+    random_paragraphs,
+    new_dataset_version,
+)
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger()
+
+
+def format_metadata_line(file_path: str, file_metadata: dict[str, Any]) -> str:
+    """Format metadata for an output file into a format Valohai understands.
+
+    Args:
+        file_path: The path to the file (relative to the execution outputs root directory).
+        file_metadata: The metadata for the file.
+    """
+
+    return (
+        json.dumps(
+            {
+                "file": file_path,
+                "metadata": file_metadata,
+            }
+        )
+        + "\n"
+    )
+
+
+# define the step for valohai.yaml
+
+default_parameters = {
+    "nr_of_files": 10,
+}
+
+valohai.prepare(
+    step="create-files-plain",
+    image="ghcr.io/astral-sh/uv:python3.13-bookworm-slim",
+    default_parameters=default_parameters,
+)
+
+# put the created files in a directory named after the current date
+# this is not required; it is just a way to organize the outputs
+# example value: "2024-11-25"
+output_dir = iso_date()
+
+# the metadata file must be saved in the outputs root directory
+# under the name "valohai.metadata.jsonl"
+metadata_file_path = valohai.outputs().path("valohai.metadata.jsonl")
+
+# metadata format: {file_path: metadata, ...}
+execution_outputs_metadata: dict[str, dict[str, Any]] = {}
+
+# datasets and version to be created
+dataset_name = "metadata-demo"
+dataset_2_name = "metadata-demo-2"
+dataset_version = new_dataset_version()
+
+# create random files with metadata
+
+nr_of_files = valohai.parameters("nr_of_files").value
+output_path = valohai.outputs(output_dir)
+
+for filename in random_filenames(nr_of_files):
+    # create a file with dummy content
+    logger.info(f"Creating file: {filename}")
+    with open(output_path.path(filename), "w") as output_file:
+        output_file.write(random_paragraphs())
+
+    # create some dummy metadata for the file
+    file_path = f"{output_dir}/{filename}"
+    file_metadata = dummy_metadata()
+
+    # add the file to the dataset versions
+    file_metadata["valohai.dataset-versions"] = [
+        f"dataset://{dataset_name}/{dataset_version}",
+        f"dataset://{dataset_2_name}/{dataset_version}",
+    ]
+
+    execution_outputs_metadata[file_path] = file_metadata
+
+# save metadata to a file
+
+logger.info(f"Saving metadata to: {metadata_file_path}")
+with open(metadata_file_path, "w") as metadata_file:
+    metadata_file.writelines(
+        format_metadata_line(filename, file_metadata)
+        for filename, file_metadata in execution_outputs_metadata.items()
+    )
+
+# output the metadata to the execution log
+
+with open(metadata_file_path) as metadata_file:
+    logger.info("Execution metadata:\n" + metadata_file.read())
