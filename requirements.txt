@@ -1,5 +1,6 @@
 # Valohai utilities for handling output data in the script
-valohai-utils
+# Version that supports property handling required
+valohai-utils>=0.6.0
 
 # Helper for creating dummy data for demo purposes
 faker
