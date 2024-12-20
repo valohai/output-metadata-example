@@ -1,11 +1,10 @@
 """Execution step that creates random files with metadata.
 
 Metadata is stored in one file per execution.
+File handling is done using the `valohai-utils` helper library.
 """
 
-import json
 import logging
-from typing import Any
 
 import valohai  # type: ignore
 
@@ -19,25 +18,6 @@ from util import (
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
-
-
-def format_metadata_line(file_path: str, file_metadata: dict[str, Any]) -> str:
-    """Format metadata for an output file into a format Valohai understands.
-
-    Args:
-        file_path: The path to the file (relative to the execution outputs root directory).
-        file_metadata: The metadata for the file.
-    """
-
-    return (
-        json.dumps(
-            {
-                "file": file_path,
-                "metadata": file_metadata,
-            }
-        )
-        + "\n"
-    )
 
 
 # define the step for valohai.yaml
@@ -57,13 +37,6 @@ valohai.prepare(
 # example value: "2024-11-25"
 output_dir = iso_date()
 
-# the metadata file must be saved in the outputs root directory
-# under the name "valohai.metadata.jsonl"
-metadata_file_path = valohai.outputs().path("valohai.metadata.jsonl")
-
-# metadata format: {file_path: metadata, ...}
-execution_outputs_metadata: dict[str, dict[str, Any]] = {}
-
 # datasets and version to be created
 dataset_name = "metadata-demo"
 dataset_2_name = "metadata-demo-2"
@@ -74,34 +47,21 @@ dataset_version = new_dataset_version()
 nr_of_files = valohai.parameters("nr_of_files").value
 output_path = valohai.outputs(output_dir)
 
-for filename in random_filenames(nr_of_files):
-    # create a file with dummy content
-    logger.info(f"Creating file: {filename}")
-    with open(output_path.path(filename), "w") as output_file:
-        output_file.write(random_paragraphs())
+with valohai.output_properties() as properties:
+    # create dataset version URIs
+    dataset_1_version = properties.dataset_version_uri(dataset_name, dataset_version)
+    dataset_2_version = properties.dataset_version_uri(dataset_2_name, dataset_version)
 
-    # create some dummy metadata for the file
-    file_path = f"{output_dir}/{filename}"
-    file_metadata = dummy_metadata()
+    for filename in random_filenames(nr_of_files):
+        # create a file with dummy content
+        logger.info(f"Creating file: {filename}")
+        with open(output_path.path(filename), "w") as output_file:
+            output_file.write(random_paragraphs())
 
-    # add the file to the dataset versions
-    file_metadata["valohai.dataset-versions"] = [
-        f"dataset://{dataset_name}/{dataset_version}",
-        f"dataset://{dataset_2_name}/{dataset_version}",
-    ]
+        # create some dummy metadata for the file
+        file_path = f"{output_dir}/{filename}"
+        properties.add(file=file_path, properties=dummy_metadata())
 
-    execution_outputs_metadata[file_path] = file_metadata
-
-# save metadata to a file
-
-logger.info(f"Saving metadata to: {metadata_file_path}")
-with open(metadata_file_path, "w") as metadata_file:
-    metadata_file.writelines(
-        format_metadata_line(filename, file_metadata)
-        for filename, file_metadata in execution_outputs_metadata.items()
-    )
-
-# output the metadata to the execution log
-
-with open(metadata_file_path) as metadata_file:
-    logger.info("Execution metadata:\n" + metadata_file.read())
+        # add the file to the dataset versions
+        properties.add_to_dataset(file=file_path, dataset_version=dataset_1_version)
+        properties.add_to_dataset(file=file_path, dataset_version=dataset_2_version)
