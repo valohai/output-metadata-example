@@ -24,3 +24,16 @@
         default: 10
         optional: false
         type: integer
+- step:
+    name: create-files-with-sidecar
+    image: ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+    command:
+      - uv venv
+      - source .venv/bin/activate
+      - uv pip install -r requirements.txt
+      - python ./create_files_with_metadata_sidecar.py {parameters}
+    parameters:
+      - name: nr_of_files
+        default: 10
+        optional: false
+        type: integer
